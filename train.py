@@ -51,16 +51,17 @@ def collate_fn(batch):
 if __name__ == '__main__':
     # de翻译en的数据集
     dataset = De2EnDataset()
-    dataloader = DataLoader(dataset, batch_size=250, shuffle=True, num_workers=4, persistent_workers=True,
+    dataloader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=4, persistent_workers=True,
                             collate_fn=collate_fn)
 
     # 模型
     try:
         transformer = torch.load('checkpoints/model.pth')
     except:
-        transformer = Transformer(enc_vocab_size=len(de_vocab), dec_vocab_size=len(en_vocab), emb_size=512, q_k_size=64,
-                                  v_size=64, f_size=2048, head=8, nblocks=6, dropout=0.1, seq_max_len=SEQ_MAX_LEN).to(
-            DEVICE)
+        transformer = Transformer(enc_vocab_size=len(de_vocab), dec_vocab_size=len(en_vocab),
+                                  emb_size=256, q_k_size=64,
+                                  v_size=64, f_size=1024, head=8, nblocks=6,
+                                  dropout=0.1, seq_max_len=SEQ_MAX_LEN).to(DEVICE)
 
     # 损失函数和优化器
     loss_fn = nn.CrossEntropyLoss(ignore_index=PAD_IDX)  # 样本正确输出序列的pad词不参与损失计算

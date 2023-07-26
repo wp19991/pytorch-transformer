@@ -38,8 +38,11 @@ en_vocab.set_default_index(UNK_IDX)
 
 # 句子特征预处理
 def de_preprocess(de_sentence):
+    # 将单词分隔开
     tokens = de_tokenizer(de_sentence)
+    # 加上开始和阶结尾
     tokens = [BOS_SYM] + tokens + [EOS_SYM]
+    # 将风格开的token索引成id
     ids = de_vocab(tokens)
     return tokens, ids
 

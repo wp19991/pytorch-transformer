@@ -4,8 +4,11 @@
 conda create -n pytorch2 python=3.10
 conda activate pytorch2
 conda install pytorch torchvision torchaudio torchtext pytorch-cuda=11.8 -c pytorch -c nvidia
-pip install portalocker>=2.0.0 spacy
-# https://github.com/explosion/spacy-models/
+pip install portalocker>=2.0.0
+
+# 安装分词器
+pip install spacy
+# 下载地址：https://github.com/explosion/spacy-models/
 pip install de_core_news_sm-3.6.0-py3-none-any.whl
 pip install en_core_web_sm-3.6.0-py3-none-any.whl
 ```
@@ -38,15 +41,3 @@ checkpoints: 训练好的model
 train.py：训练
 evaluation.py：预测
 ```
-
-# 了解更多
-
-```
-代码和资源均免费公开，但如果你觉得很难看懂的话，那你大概率应该加入我的私教小课堂：
-
-我会在鱼塘里做2件事情：
-1，回答大家关于本项目的问题
-2，定期组织直播课讲解本项目
-```
-
-![ai小鱼塘](ref/aixiaoyutang.jpg)

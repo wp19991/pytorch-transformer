@@ -35,10 +35,10 @@ def translate(transformer, de_sentence):
 
 if __name__ == '__main__':
     # 加载模型
-    transformer = torch.load('checkpoints/model.pth')
+    transformer = torch.load('checkpoints/model_3.pth')
     transformer.eval()
 
-    en = translate(transformer, 'Zwei Männer unterhalten sich mit zwei Frauen')
+    en = translate(transformer, 'Ein Mann lächelt einen ausgestopften Löwen an.')
     print(en)
 
     '''
