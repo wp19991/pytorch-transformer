@@ -1,6 +1,6 @@
-'''
+"""
 输入词序列，先做id向量化,再给id附加位置信息
-'''
+"""
 import math
 
 import torch

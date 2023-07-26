@@ -1,6 +1,6 @@
-'''
+"""
 输入emb后的词序列,根据Q,K,V方法计算词与词之间的相关性,为每个词生成信息提取后的emb(与输入词1:1映射)
-'''
+"""
 import math
 
 import torch
@@ -24,31 +24,41 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, x_q, x_k_v, attn_mask):
         # x_q: (batch_size,seq_len,emb_size)
-        q = self.w_q(x_q)  # q: (batch_size,seq_len,head*q_k_size)
-        k = self.w_k(x_k_v)  # k: (batch_size,seq_len,head*q_k_size)
+        q = self.w_q(x_q)
+        # q: (batch_size,seq_len,head*q_k_size)
+        k = self.w_k(x_k_v)
+        # k: (batch_size,seq_len,head*q_k_size)
 
         # 多头兼容
-        q = q.view(q.size()[0], q.size()[1], self.head, self.q_k_size).transpose(1,
-                                                                                 2)  # q: (batch_size,head,seq_len,q_k_size)
-        k = k.view(k.size()[0], k.size()[1], self.head, self.q_k_size).transpose(1, 2).transpose(2,
-                                                                                                 3)  # k:(batch_size,head,q_k_size,seq_len)
+        q = q.view(q.size()[0], q.size()[1], self.head, self.q_k_size).transpose(1, 2)
+        # q: (batch_size,head,seq_len,q_k_size)
+        k = k.view(k.size()[0], k.size()[1], self.head, self.q_k_size).transpose(1, 2).transpose(2, 3)
+        # k:(batch_size,head,q_k_size,seq_len)
 
         # 注意力矩阵
-        attn = torch.matmul(q, k) / math.sqrt(self.q_k_size)  # (batch_size,head,seq_len,seq_len) row是q,col是k
+        # (batch_size,head,seq_len,seq_len) row是q,col是k
+        attn = torch.matmul(q, k) / math.sqrt(self.q_k_size)
 
         # 注意力分值处理
         # attn_mask: (batch_size,seq_len,seq_len)
-        attn_mask = attn_mask.unsqueeze(1).expand(-1, self.head, -1, -1)  # attn_mask: (batch_size,head,seq_len,seq_len)
+        attn_mask = attn_mask.unsqueeze(1).expand(-1, self.head, -1, -1)
+        # attn_mask: (batch_size,head,seq_len,seq_len)
         attn = attn.masked_fill(attn_mask, -1e9)
-        attn = torch.softmax(attn, dim=-1)  # scores: (batch_size,head,seq_len,seq_len)
+        attn = torch.softmax(attn, dim=-1)
+        # scores: (batch_size,head,seq_len,seq_len)
 
         # 注意力与V相乘
         v = self.w_v(x_k_v)  # v: (batch_size,seq_len,head*v_size)
-        v = v.view(v.size()[0], v.size()[1], self.head, self.v_size).transpose(1,
-                                                                               2)  # v: (batch_size,head,seq_len,v_size)
-        z = torch.matmul(attn, v)  # z: (batch_size,head,seq_len,v_size)
-        z = z.transpose(1, 2)  # z: (batch_size,seq_len,head,v_size)
-        return z.reshape(z.size()[0], z.size()[1], -1)  # z: (batch_size,seq_len,head*v_size)
+        v = v.view(v.size()[0], v.size()[1], self.head, self.v_size).transpose(1, 2)
+        # v: (batch_size,head,seq_len,v_size)
+
+        z = torch.matmul(attn, v)
+        # z: (batch_size,head,seq_len,v_size)
+        z = z.transpose(1, 2)
+        # z: (batch_size,seq_len,head,v_size)
+
+        # z: (batch_size,seq_len,head*v_size)
+        return z.reshape(z.size()[0], z.size()[1], -1)
 
 
 if __name__ == '__main__':
