@@ -1,5 +1,15 @@
 # pytorch-transformer
 
+```bash
+conda create -n pytorch2 python=3.10
+conda activate pytorch2
+conda install pytorch torchvision torchaudio torchtext pytorch-cuda=11.8 -c pytorch -c nvidia
+pip install portalocker>=2.0.0 spacy
+# https://github.com/explosion/spacy-models/
+pip install de_core_news_sm-3.6.0-py3-none-any.whl
+pip install en_core_web_sm-3.6.0-py3-none-any.whl
+```
+
 ```
 pytorch复现transformer
 
